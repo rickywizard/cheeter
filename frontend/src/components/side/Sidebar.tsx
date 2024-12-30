@@ -2,12 +2,12 @@ import { IoHome, IoNotifications } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 import { BiLogOut } from 'react-icons/bi';
 import { Logo, LogoSquare } from '../logo';
-import NavLink from './NavLink';
+import NavLink from '../item/NavLink';
 import { RiUserFill } from 'react-icons/ri';
 
 const Sidebar = () => {
   const data = {
-    fullName: 'John Doe',
+    fullname: 'John Doe',
     username: 'johndoe',
     profileImg: '/avatars/boy1.png',
   };
@@ -34,10 +34,10 @@ const Sidebar = () => {
           </NavLink>
         </ul>
         {data && (
-          <div className="pl-3 pr-3 mt-auto mb-10">
+          <div className="md:ml-0 mx-3 mt-auto mb-10">
             <Link
               to={`/profile/${data.username}`}
-              className="flex gap-2 items-start transition-all duration-300 hover:bg-[#181818] py-2 md:px-4 rounded-full"
+              className="flex gap-2 items-center transition-all duration-300 hover:bg-[#181818] py-2 md:px-4 rounded-full"
             >
               <div className="avatar hidden md:inline-flex">
                 <div className="w-8 rounded-full">
@@ -47,7 +47,7 @@ const Sidebar = () => {
               <div className="flex md:justify-between justify-center items-center flex-1">
                 <div className="hidden md:block">
                   <p className="text-white font-bold text-sm w-20 truncate">
-                    {data?.fullName}
+                    {data?.fullname}
                   </p>
                   <p className="text-slate-500 text-sm">@{data?.username}</p>
                 </div>

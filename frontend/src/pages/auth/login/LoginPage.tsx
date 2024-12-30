@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Logo, LogoSquare } from '../../../components/logo';
 import { MdOutlineMail, MdPassword } from 'react-icons/md';
-import { ILoginProps } from '../../../interfaces/ILoginProps';
+import { LoginData } from '../../../interfaces/LoginData.interface';
 import Input from '../../../components/input/Input';
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState<ILoginProps>({
+  const [formData, setFormData] = useState<LoginData>({
     account: '',
     password: '',
   });

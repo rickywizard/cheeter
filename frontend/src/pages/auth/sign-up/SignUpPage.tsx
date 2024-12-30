@@ -6,13 +6,12 @@ import {
   MdPassword,
 } from 'react-icons/md';
 import { Link } from 'react-router-dom';
-import Logo from '../../../components/logo/Logo';
-import LogoSquare from '../../../components/logo/LogoSquare';
+import { Logo, LogoSquare } from '../../../components/logo';
 import SignUpInput from '../../../components/input/Input';
-import { ISignUpProps } from '../../../interfaces/ISignUpProps';
+import { SignUpData } from '../../../interfaces/SignUpData.interface';
 
 const SignUpPage = () => {
-  const [formData, setFormData] = useState<ISignUpProps>({
+  const [formData, setFormData] = useState<SignUpData>({
     email: '',
     username: '',
     fullname: '',

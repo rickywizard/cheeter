@@ -2,7 +2,9 @@ import { Route, Routes } from 'react-router-dom';
 import SignUpPage from './pages/auth/sign-up/SignUpPage';
 import HomePage from './pages/home/HomePage';
 import LoginPage from './pages/auth/login/LoginPage';
-import Sidebar from './components/navigation/Sidebar';
+import NotificationPage from './pages/notification/NotificationPage';
+import { RightPanel, Sidebar } from './components/side';
+import ProfilePage from './pages/profile/ProfilePage';
 
 function App() {
   return (
@@ -12,7 +14,10 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/notifications" element={<NotificationPage />} />
+        <Route path="/profile/:username" element={<ProfilePage />} />
       </Routes>
+      <RightPanel />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import CreatePost from './CreatePost';
+import Posts from '../../components/item/Posts';
 
 const HomePage = () => {
   const [feedType, setFeedType] = useState<string>('forYou');
@@ -39,7 +40,7 @@ const HomePage = () => {
         <CreatePost />
 
         {/* POSTS */}
-        {/* <Posts feedType={feedType} /> */}
+        <Posts feedType={feedType} />
       </div>
     </>
   );

@@ -4,10 +4,10 @@ import { useRef, useState } from 'react';
 import { IoCloseSharp } from 'react-icons/io5';
 
 const CreatePost = () => {
-  const [text, setText] = useState('');
+  const [text, setText] = useState<string>('');
   const [img, setImg] = useState<string | null>(null);
 
-  const imgRef = useRef(null);
+  const imgRef = useRef<HTMLInputElement | null>(null);
 
   const isPending = false;
   const isError = false;
@@ -49,10 +49,12 @@ const CreatePost = () => {
         {img && (
           <div className="relative w-72 mx-auto">
             <IoCloseSharp
-              className="absolute top-0 right-0 text-white bg-gray-800 rounded-full w-5 h-5 cursor-pointer"
+              className="absolute top-0 right-0 text-white bg-gray-800 rounded-full w-5 h-5 cursor-pointer hover:bg-gray-600"
               onClick={() => {
                 setImg(null);
-                // imgRef.current.value = null;
+                if (imgRef.current) {
+                  imgRef.current.value = '';
+                }
               }}
             />
             <img
@@ -66,12 +68,12 @@ const CreatePost = () => {
           <div className="flex gap-1 items-center">
             <CiImageOn
               className="fill-primary w-6 h-6 cursor-pointer"
-              // onClick={() => imgRef.current.click()}
+              onClick={() => imgRef.current?.click()}
             />
             <BsEmojiSmileFill className="fill-primary w-5 h-5 cursor-pointer" />
           </div>
           <input type="file" hidden ref={imgRef} onChange={handleImgChange} />
-          <button className="btn btn-primary rounded-full btn-sm text-white px-4">
+          <button className="btn btn-primary rounded-full btn-sm text-black px-4">
             {isPending ? 'Posting...' : 'Post'}
           </button>
         </div>
