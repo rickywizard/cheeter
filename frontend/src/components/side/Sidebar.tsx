@@ -4,8 +4,40 @@ import { BiLogOut } from 'react-icons/bi';
 import { Logo, LogoSquare } from '../logo';
 import NavLink from '../item/NavLink';
 import { RiUserFill } from 'react-icons/ri';
+import { useMutation } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 const Sidebar = () => {
+  const useLogoutMutation = () =>
+    useMutation({
+      mutationFn: async () => {
+        const res = await fetch('/api/auth/logout', {
+          method: 'POST',
+        });
+
+        if (!res.ok) {
+          const errorResponse = await res.json();
+          throw new Error(errorResponse.error || 'Something went wrong');
+        }
+
+        return await res.json();
+      },
+      onError: (error: Error) => {
+        toast.error(error.message);
+      },
+      onSuccess: (res) => {
+        toast.success(res.message);
+        console.log(res);
+      },
+    });
+
+  const { mutate } = useLogoutMutation();
+
+  const handleLogout = (e: React.FormEvent) => {
+    e.preventDefault();
+    mutate();
+  };
+
   const data = {
     fullname: 'John Doe',
     username: 'johndoe',
@@ -51,7 +83,10 @@ const Sidebar = () => {
                   </p>
                   <p className="text-slate-500 text-sm">@{data?.username}</p>
                 </div>
-                <BiLogOut className="w-5 h-5 cursor-pointer" />
+                <BiLogOut
+                  className="w-5 h-5 cursor-pointer"
+                  onClick={handleLogout}
+                />
               </div>
             </Link>
           </div>

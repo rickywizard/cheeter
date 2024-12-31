@@ -9,6 +9,8 @@ import { Link } from 'react-router-dom';
 import { Logo, LogoSquare } from '../../../components/logo';
 import SignUpInput from '../../../components/input/Input';
 import { SignUpData } from '../../../interfaces/SignUpData.interface';
+import { useMutation } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState<SignUpData>({
@@ -18,9 +20,38 @@ const SignUpPage = () => {
     password: '',
   });
 
+  const useSignUpMutation = () =>
+    useMutation({
+      mutationFn: async (data: SignUpData) => {
+        const res = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!res.ok) {
+          const errorResponse = await res.json();
+          throw new Error(errorResponse.error || 'Something went wrong');
+        }
+
+        return await res.json();
+      },
+      onError: (error: Error) => {
+        toast.error(error.message);
+      },
+      onSuccess: (res) => {
+        toast.success(res.message);
+        console.log(res);
+      },
+    });
+
+  const { mutate, isPending } = useSignUpMutation();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
+    mutate(formData);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,13 +60,18 @@ const SignUpPage = () => {
 
   return (
     <>
-      <div className="lg:max-w-screen-xl mx-auto flex h-screen px-10 sm:max-w-screen-sm">
+      <div className="lg:max-w-screen-xl mx-auto flex gap-10 h-screen px-10 md:max-w-screen-sm overflow-y-auto">
         <div className="flex-1 hidden lg:flex items-center justify-center">
-          <LogoSquare className="lg:w-96" />
+          <LogoSquare className="w-96" />
         </div>
         <div className="flex-1 flex flex-col justify-center items-center">
-          <form className="mx-auto flex gap-4 flex-col" onSubmit={handleSubmit}>
-            <Logo />
+          <form
+            className="mx-auto flex gap-4 flex-col w-full"
+            onSubmit={handleSubmit}
+          >
+            <div className="lg:hidden">
+              <Logo className="w-60" />
+            </div>
             <h1 className="text-4xl font-extrabold text-white">Join now.</h1>
             <SignUpInput
               type="email"
@@ -49,7 +85,7 @@ const SignUpPage = () => {
             </SignUpInput>
             <SignUpInput
               type="text"
-              className="grow "
+              className="grow"
               placeholder="Username"
               name="username"
               onChange={handleInputChange}
@@ -78,8 +114,7 @@ const SignUpPage = () => {
               <MdPassword />
             </SignUpInput>
             <button className="btn rounded-md btn-primary text-white">
-              {/* {isPending ? 'Loading...' : 'Sign up'} */}
-              Sign Up
+              {isPending ? 'Loading...' : 'Sign up'}
             </button>
           </form>
           <div className="flex flex-col gap-2 mt-4 w-full">

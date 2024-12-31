@@ -1,10 +1,9 @@
-import logo from '../../assets/logo-square.png';
 import { ImageSizeProps } from './ImageSizeProps';
 
 const LogoSquare = ({ width, height, className }: ImageSizeProps) => {
   return (
     <img
-      src={logo}
+      src="/logo-square.png"
       alt=""
       width={width}
       height={height}

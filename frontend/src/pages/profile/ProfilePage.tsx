@@ -15,7 +15,7 @@ import { MdEdit } from 'react-icons/md';
 const ProfilePage = () => {
   const [coverImg, setCoverImg] = useState<string | null>(null);
   const [profileImg, setProfileImg] = useState<string | null>(null);
-  const [feedType, setFeedType] = useState('posts');
+  const [feedType, setFeedType] = useState<string>('posts');
 
   const coverImgRef = useRef<HTMLInputElement | null>(null);
   const profileImgRef = useRef<HTMLInputElement | null>(null);
@@ -27,7 +27,7 @@ const ProfilePage = () => {
     _id: '1',
     fullName: 'John Doe',
     username: 'johndoe',
-    profileImg: '/avatars/boy2.png',
+    profileImg: '/avatar-placeholder.png',
     coverImg: '/cover.png',
     bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     link: 'https://youtube.com/@johndoe',
@@ -109,7 +109,6 @@ const ProfilePage = () => {
                         user?.profileImg ||
                         '/avatar-placeholder.png'
                       }
-                      className="z-50"
                     />
                     <div className="absolute top-5 right-3 p-1 bg-primary rounded-full group-hover/avatar:opacity-100 opacity-0 cursor-pointer">
                       {isMyProfile && (
@@ -142,7 +141,7 @@ const ProfilePage = () => {
                 )}
               </div>
 
-              <div className="flex flex-col gap-4 mt-14 px-4">
+              <div className="flex flex-col gap-4 mt-8 px-4">
                 <div className="flex flex-col">
                   <span className="font-bold text-lg">{user?.fullName}</span>
                   <span className="text-sm text-slate-500">
@@ -216,7 +215,7 @@ const ProfilePage = () => {
             </>
           )}
 
-          <Posts />
+          <Posts feedType={feedType} />
         </div>
       </div>
     </>

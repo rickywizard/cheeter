@@ -2,7 +2,7 @@ import PostItem from '../../components/item/PostItem';
 import PostSkeleton from '../../components/skeleton/PostSkeleton';
 import { POSTS } from '../../utils/dummyData';
 
-const Posts = ({ feedType }: { feedType?: string }) => {
+const Posts = ({ feedType }: { feedType: string }) => {
   const isLoading = false;
 
   return (
