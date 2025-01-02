@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LogoSquare } from '../../../components/logo';
 import { MdOutlineMail, MdPassword } from 'react-icons/md';
-import { LoginData } from '../../../interfaces/LoginData.interface';
+import { LoginRequest } from '../../../interfaces/LoginRequest.interface';
 import Input from '../../../components/input/Input';
 import useLoginMutation from '../../../hooks/useLoginMutation';
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState<LoginData>({
+  const [formData, setFormData] = useState<LoginRequest>({
     account: '',
     password: '',
   });

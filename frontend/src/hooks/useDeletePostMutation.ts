@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 
-const useDeletePostMutation = (postId: string) => {
+const useDeletePostMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (postId: string) => {
       const res = await fetch(`/api/post/${postId}`, {
         method: 'DELETE',
       });
@@ -23,7 +23,7 @@ const useDeletePostMutation = (postId: string) => {
     },
     onSuccess: (res) => {
       toast.success(res.message);
-      console.log(res);
+      // console.log(res);
       queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
   });

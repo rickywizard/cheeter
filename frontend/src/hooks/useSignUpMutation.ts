@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { SignUpData } from '../interfaces/SignUpData.interface';
+import { SignUpRequest } from '../interfaces/SignUpRequest.interface';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ const useSignUpMutation = () => {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: async (data: SignUpData) => {
+    mutationFn: async (data: SignUpRequest) => {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: {

@@ -8,11 +8,11 @@ import {
 import { Link } from 'react-router-dom';
 import { Logo, LogoSquare } from '../../../components/logo';
 import SignUpInput from '../../../components/input/Input';
-import { SignUpData } from '../../../interfaces/SignUpData.interface';
+import { SignUpRequest } from '../../../interfaces/SignUpRequest.interface';
 import useSignUpMutation from '../../../hooks/useSignUpMutation';
 
 const SignUpPage = () => {
-  const [formData, setFormData] = useState<SignUpData>({
+  const [formData, setFormData] = useState<SignUpRequest>({
     email: '',
     username: '',
     fullname: '',

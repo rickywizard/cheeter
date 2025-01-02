@@ -28,10 +28,10 @@ const PostItem = ({ post }: PostProps) => {
   const formattedDate = '1h';
   const isCommenting = false;
 
-  const { mutate: deletePost, isPending } = useDeletePostMutation(post._id);
+  const { mutate: deletePost, isPending } = useDeletePostMutation();
 
   const handleDeletePost = () => {
-    deleteConfirmRef.current?.showModal();
+    deletePost(post._id);
   };
 
   const handlePostComment = (e: React.FormEvent) => {
@@ -68,7 +68,7 @@ const PostItem = ({ post }: PostProps) => {
                 {!isPending && (
                   <FaTrash
                     className="cursor-pointer hover:text-red-500"
-                    onClick={handleDeletePost}
+                    onClick={() => deleteConfirmRef.current?.showModal()}
                   />
                 )}
 
@@ -194,7 +194,7 @@ const PostItem = ({ post }: PostProps) => {
       <ConfirmationModal
         ref={deleteConfirmRef}
         message="Are you sure you want to delete this post"
-        onConfirm={deletePost}
+        onConfirm={handleDeletePost}
       />
     </>
   );
