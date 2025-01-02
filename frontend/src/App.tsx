@@ -6,7 +6,7 @@ import NotificationPage from './pages/notification/NotificationPage';
 import { RightPanel, Sidebar } from './components/side';
 import ProfilePage from './pages/profile/ProfilePage';
 import { Toaster } from 'react-hot-toast';
-import { useAuthUser } from './hooks/useAuthUser';
+import useAuthUser from './hooks/useAuthUser';
 import LoadingSpinner from './components/common/LoadingSpinner';
 
 function App() {

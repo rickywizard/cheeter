@@ -5,7 +5,7 @@ import { Logo, LogoSquare } from '../logo';
 import NavLink from '../item/NavLink';
 import { RiUserFill } from 'react-icons/ri';
 import useLogoutMutation from '../../hooks/useLogoutMutation';
-import { useAuthUser } from '../../hooks/useAuthUser';
+import useAuthUser from '../../hooks/useAuthUser';
 
 const Sidebar = () => {
   const { mutate } = useLogoutMutation();

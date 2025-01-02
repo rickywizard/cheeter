@@ -1,25 +1,32 @@
+import { useEffect } from 'react';
 import PostItem from '../../components/item/PostItem';
 import PostSkeleton from '../../components/skeleton/PostSkeleton';
-import { POSTS } from '../../utils/dummyData';
+import usePostQuery from '../../hooks/usePostQuery';
 
 const Posts = ({ feedType }: { feedType: string }) => {
-  const isLoading = false;
+  const { data, isLoading, refetch, isRefetching } = usePostQuery(feedType);
+
+  const posts = data?.data;
+
+  useEffect(() => {
+    refetch();
+  }, [feedType, refetch]);
 
   return (
     <>
-      {isLoading && (
+      {(isLoading || isRefetching) && (
         <div className="flex flex-col justify-center">
           <PostSkeleton />
           <PostSkeleton />
           <PostSkeleton />
         </div>
       )}
-      {!isLoading && POSTS?.length === 0 && (
+      {!isLoading && !isRefetching && posts?.length === 0 && (
         <p className="text-center my-4">No posts in this tab. Switch 👻</p>
       )}
-      {!isLoading && POSTS && (
+      {!isLoading && !isRefetching && posts && (
         <div>
-          {POSTS.map((post) => (
+          {posts.map((post) => (
             <PostItem key={post._id} post={post} />
           ))}
         </div>

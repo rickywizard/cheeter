@@ -13,7 +13,7 @@ const CreatePost = () => {
   const isError = false;
 
   const data = {
-    profileImg: '/avatars/boy1.png',
+    profileImg: '/avatar-placeholder.png',
   };
 
   const handleSubmit = (e: React.FormEvent) => {

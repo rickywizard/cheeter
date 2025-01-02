@@ -1,7 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
+import { Response } from '../interfaces/Response.interface';
+import { UserData } from '../interfaces/UserData.interface';
 
-export const useAuthUser = () => {
-  return useQuery({
+const useAuthUser = () => {
+  return useQuery<Response<UserData>>({
     queryKey: ['authUser'],
     queryFn: async () => {
       const res = await fetch('/api/auth/me');
@@ -19,3 +21,5 @@ export const useAuthUser = () => {
     retry: 1,
   });
 };
+
+export default useAuthUser;
