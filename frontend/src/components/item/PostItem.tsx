@@ -6,6 +6,10 @@ import { FaRegBookmark } from 'react-icons/fa6';
 import { FaTrash } from 'react-icons/fa';
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import useAuthUser from '../../hooks/useAuthUser';
+import useDeletePostMutation from '../../hooks/useDeletePostMutation';
+import LoadingSpinner from '../common/LoadingSpinner';
+import ConfirmationModal from '../common/ConfirmationModal';
 
 interface PostProps {
   post: PostData;
@@ -13,14 +17,22 @@ interface PostProps {
 
 const PostItem = ({ post }: PostProps) => {
   const [comment, setComment] = useState<string>('');
-  const modalRef = useRef<HTMLDialogElement>(null);
+  const commentRef = useRef<HTMLDialogElement>(null);
+  const deleteConfirmRef = useRef<HTMLDialogElement>(null);
   const postOwner = post.user;
+
+  const { data: authUser } = useAuthUser();
+
+  const isMyPost = authUser?.data?._id === postOwner._id;
   const isLiked = false;
-  const isMyPost = true;
   const formattedDate = '1h';
   const isCommenting = false;
 
-  const handleDeletePost = () => {};
+  const { mutate: deletePost, isPending } = useDeletePostMutation(post._id);
+
+  const handleDeletePost = () => {
+    deleteConfirmRef.current?.showModal();
+  };
 
   const handlePostComment = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,10 +65,14 @@ const PostItem = ({ post }: PostProps) => {
             </span>
             {isMyPost && (
               <span className="flex justify-end flex-1">
-                <FaTrash
-                  className="cursor-pointer hover:text-red-500"
-                  onClick={handleDeletePost}
-                />
+                {!isPending && (
+                  <FaTrash
+                    className="cursor-pointer hover:text-red-500"
+                    onClick={handleDeletePost}
+                  />
+                )}
+
+                {isPending && <LoadingSpinner size="sm" />}
               </span>
             )}
           </div>
@@ -74,7 +90,7 @@ const PostItem = ({ post }: PostProps) => {
             <div className="flex gap-4 items-center w-2/3 justify-between">
               <div
                 className="flex gap-1 items-center cursor-pointer group"
-                onClick={() => modalRef.current?.showModal()}
+                onClick={() => commentRef.current?.showModal()}
               >
                 <FaRegComment className="w-4 h-4  text-slate-500 group-hover:text-sky-400" />
                 <span className="text-sm text-slate-500 group-hover:text-sky-400">
@@ -82,7 +98,10 @@ const PostItem = ({ post }: PostProps) => {
                 </span>
               </div>
               {/* We're using Modal Component from DaisyUI */}
-              <dialog ref={modalRef} className="modal border-none outline-none">
+              <dialog
+                ref={commentRef}
+                className="modal border-none outline-none"
+              >
                 <div className="modal-box rounded border border-gray-600">
                   <h3 className="font-bold text-lg mb-4">COMMENTS</h3>
                   <div className="flex flex-col gap-3 max-h-60 overflow-auto">
@@ -172,6 +191,11 @@ const PostItem = ({ post }: PostProps) => {
           </div>
         </div>
       </div>
+      <ConfirmationModal
+        ref={deleteConfirmRef}
+        message="Are you sure you want to delete this post"
+        onConfirm={deletePost}
+      />
     </>
   );
 };
