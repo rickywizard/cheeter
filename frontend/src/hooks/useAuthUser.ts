@@ -7,6 +7,8 @@ export const useAuthUser = () => {
       const res = await fetch('/api/auth/me');
       const result = await res.json();
 
+      if (result.error) return null;
+
       if (!res.ok) {
         throw new Error(result.error || 'Something went wrong');
       }

@@ -4,41 +4,13 @@ import { LogoSquare } from '../../../components/logo';
 import { MdOutlineMail, MdPassword } from 'react-icons/md';
 import { LoginData } from '../../../interfaces/LoginData.interface';
 import Input from '../../../components/input/Input';
-import { useMutation } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+import useLoginMutation from '../../../hooks/useLoginMutation';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState<LoginData>({
     account: '',
     password: '',
   });
-
-  const useLoginMutation = () =>
-    useMutation({
-      mutationFn: async (data: LoginData) => {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (!res.ok) {
-          const errorResponse = await res.json();
-          throw new Error(errorResponse.error || 'Something went wrong');
-        }
-
-        return await res.json();
-      },
-      onError: (error: Error) => {
-        toast.error(error.message);
-      },
-      onSuccess: (res) => {
-        toast.success(res.message);
-        console.log(res);
-      },
-    });
 
   const { mutate, isPending } = useLoginMutation();
 

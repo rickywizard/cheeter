@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import SignUpPage from './pages/auth/sign-up/SignUpPage';
 import HomePage from './pages/home/HomePage';
 import LoginPage from './pages/auth/login/LoginPage';
@@ -6,15 +6,10 @@ import NotificationPage from './pages/notification/NotificationPage';
 import { RightPanel, Sidebar } from './components/side';
 import ProfilePage from './pages/profile/ProfilePage';
 import { Toaster } from 'react-hot-toast';
-import { useQuery } from '@tanstack/react-query';
 import { useAuthUser } from './hooks/useAuthUser';
 import LoadingSpinner from './components/common/LoadingSpinner';
 
 function App() {
-  const location = useLocation();
-  const isAuthPage =
-    location.pathname === '/login' || location.pathname === '/sign-up';
-
   const { data: authUser, isLoading } = useAuthUser();
 
   if (isLoading) {
@@ -27,7 +22,7 @@ function App() {
 
   return (
     <div className="flex max-w-6xl mx-auto">
-      {!isAuthPage && <Sidebar />}
+      {authUser && <Sidebar />}
       <Routes>
         <Route
           path="/"
@@ -50,7 +45,7 @@ function App() {
           element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
         />
       </Routes>
-      {!isAuthPage && <RightPanel />}
+      {authUser && <RightPanel />}
       <Toaster />
     </div>
   );

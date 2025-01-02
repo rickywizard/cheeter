@@ -9,8 +9,7 @@ import { Link } from 'react-router-dom';
 import { Logo, LogoSquare } from '../../../components/logo';
 import SignUpInput from '../../../components/input/Input';
 import { SignUpData } from '../../../interfaces/SignUpData.interface';
-import { useMutation } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+import useSignUpMutation from '../../../hooks/useSignUpMutation';
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState<SignUpData>({
@@ -19,33 +18,6 @@ const SignUpPage = () => {
     fullname: '',
     password: '',
   });
-
-  const useSignUpMutation = () =>
-    useMutation({
-      mutationFn: async (data: SignUpData) => {
-        const res = await fetch('/api/auth/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
-
-        if (!res.ok) {
-          const errorResponse = await res.json();
-          throw new Error(errorResponse.error || 'Something went wrong');
-        }
-
-        return await res.json();
-      },
-      onError: (error: Error) => {
-        toast.error(error.message);
-      },
-      onSuccess: (res) => {
-        toast.success(res.message);
-        console.log(res);
-      },
-    });
 
   const { mutate, isPending } = useSignUpMutation();
 

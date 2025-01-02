@@ -4,33 +4,10 @@ import { BiLogOut } from 'react-icons/bi';
 import { Logo, LogoSquare } from '../logo';
 import NavLink from '../item/NavLink';
 import { RiUserFill } from 'react-icons/ri';
-import { useMutation } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+import useLogoutMutation from '../../hooks/useLogoutMutation';
+import { useAuthUser } from '../../hooks/useAuthUser';
 
 const Sidebar = () => {
-  const useLogoutMutation = () =>
-    useMutation({
-      mutationFn: async () => {
-        const res = await fetch('/api/auth/logout', {
-          method: 'POST',
-        });
-
-        if (!res.ok) {
-          const errorResponse = await res.json();
-          throw new Error(errorResponse.error || 'Something went wrong');
-        }
-
-        return await res.json();
-      },
-      onError: (error: Error) => {
-        toast.error(error.message);
-      },
-      onSuccess: (res) => {
-        toast.success(res.message);
-        console.log(res);
-      },
-    });
-
   const { mutate } = useLogoutMutation();
 
   const handleLogout = (e: React.FormEvent) => {
@@ -38,11 +15,9 @@ const Sidebar = () => {
     mutate();
   };
 
-  const data = {
-    fullname: 'John Doe',
-    username: 'johndoe',
-    profileImg: '/avatars/boy1.png',
-  };
+  const { data } = useAuthUser();
+
+  const user = data?.data;
 
   return (
     <div className="md:flex-[2_2_0] w-18 max-w-52">
@@ -65,23 +40,23 @@ const Sidebar = () => {
             <RiUserFill className="w-6 h-6" />
           </NavLink>
         </ul>
-        {data && (
+        {user && (
           <div className="md:ml-0 mx-3 mt-auto mb-10">
             <Link
-              to={`/profile/${data.username}`}
+              to={`/profile/${user.username}`}
               className="flex gap-2 items-center transition-all duration-300 hover:bg-[#181818] py-2 md:px-4 rounded-full"
             >
               <div className="avatar hidden md:inline-flex">
                 <div className="w-8 rounded-full">
-                  <img src={data?.profileImg || '/avatar-placeholder.png'} />
+                  <img src={user?.profileImg || '/avatar-placeholder.png'} />
                 </div>
               </div>
               <div className="flex md:justify-between justify-center items-center flex-1">
                 <div className="hidden md:block">
                   <p className="text-white font-bold text-sm w-20 truncate">
-                    {data?.fullname}
+                    {user?.fullname}
                   </p>
-                  <p className="text-slate-500 text-sm">@{data?.username}</p>
+                  <p className="text-slate-500 text-sm">@{user?.username}</p>
                 </div>
                 <BiLogOut
                   className="w-5 h-5 cursor-pointer"
