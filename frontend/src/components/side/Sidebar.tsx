@@ -1,4 +1,4 @@
-import { IoHome, IoNotifications } from 'react-icons/io5';
+import { IoNotifications } from 'react-icons/io5';
 import { Link } from 'react-router-dom';
 import { BiLogOut } from 'react-icons/bi';
 import { Logo, LogoSquare } from '../logo';
@@ -6,6 +6,7 @@ import NavLink from '../item/NavLink';
 import { RiUserFill } from 'react-icons/ri';
 import useLogoutMutation from '../../hooks/useLogoutMutation';
 import useAuthUser from '../../hooks/useAuthUser';
+import { GoHomeFill } from 'react-icons/go';
 
 const Sidebar = () => {
   const { mutate } = useLogoutMutation();
@@ -31,7 +32,7 @@ const Sidebar = () => {
         </Link>
         <ul className="flex flex-col gap-3 mt-4">
           <NavLink text="Home">
-            <IoHome className="w-6 h-6" />
+            <GoHomeFill className="w-6 h-6" />
           </NavLink>
           <NavLink text="Notifications">
             <IoNotifications className="w-6 h-6" />

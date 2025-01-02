@@ -1,9 +1,15 @@
 import { Link } from 'react-router-dom';
 import RightPanelSkeleton from '../skeleton/RighPanelSkeleton';
-import { USERS_FOR_RIGHT_PANEL } from '../../utils/dummyData';
+import useSuggestedUser from '../../hooks/useSuggestedUser';
 
 const RightPanel = () => {
-  const isLoading = false;
+  const { data, isLoading } = useSuggestedUser();
+
+  const suggestedUser = data?.data;
+
+  if (suggestedUser?.length === 0) {
+    return <div className="md:w-60 w-0"></div>;
+  }
 
   return (
     <div className="hidden lg:block m-3">
@@ -19,7 +25,7 @@ const RightPanel = () => {
             </>
           )}
           {!isLoading &&
-            USERS_FOR_RIGHT_PANEL?.map((user) => (
+            suggestedUser?.map((user) => (
               <Link
                 to={`/profile/${user.username}`}
                 className="flex items-center justify-between gap-5"

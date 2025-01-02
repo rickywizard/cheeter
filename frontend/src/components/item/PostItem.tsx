@@ -81,7 +81,7 @@ const PostItem = ({ post }: PostProps) => {
             {post.img && (
               <img
                 src={post.img}
-                className="h-80 object-contain rounded-lg border border-gray-700"
+                className="h-80 object-cover rounded-lg border border-gray-700"
                 alt=""
               />
             )}
