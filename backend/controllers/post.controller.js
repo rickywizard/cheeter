@@ -57,13 +57,9 @@ export const getLikedPosts = async (req, res) => {
   const userId = req.params.id;
 
   try {
-    const user = await User.findById(userId);
+    const currentUser = req.user;
 
-    if (!user) {
-      return res.status(404).json({ success: false, error: 'User not found' });
-    }
-
-    const likedPosts = await Post.find({ _id: { $in: user.likedPosts } })
+    const likedPosts = await Post.find({ _id: { $in: currentUser.likedPosts } })
       .populate({
         path: 'user',
         select: '-password',
