@@ -218,10 +218,16 @@ export const commentOnPost = async (req, res) => {
 
     await post.save();
 
+    const updatedComments = post.comments.map((comment) => ({
+      _id: comment._id,
+      user: comment.user,
+      text: comment.text,
+    }));
+
     res.status(200).json({
       success: true,
       message: 'Comment added successfully',
-      data: post,
+      data: updatedComments,
     });
   } catch (error) {
     console.error('Error in commentOnPost', error.message);

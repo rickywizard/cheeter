@@ -11,13 +11,14 @@ import useDeletePostMutation from '../../hooks/useDeletePostMutation';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ConfirmationModal from '../common/ConfirmationModal';
 import useLikePostMutation from '../../hooks/useLikePostMutation';
+import useCommentMutation from '../../hooks/useCommentMutation';
 
 interface PostProps {
   post: PostData;
 }
 
 const PostItem = ({ post }: PostProps) => {
-  const [comment, setComment] = useState<string>('');
+  const [text, setText] = useState<string>('');
   const commentRef = useRef<HTMLDialogElement>(null);
   const deleteConfirmRef = useRef<HTMLDialogElement>(null);
   const postOwner = post.user;
@@ -29,7 +30,6 @@ const PostItem = ({ post }: PostProps) => {
     ? post.likes.includes(authUser.data._id)
     : false;
   const formattedDate = '1h';
-  const isCommenting = false;
 
   const { mutate: deletePost, isPending: isDeleting } = useDeletePostMutation();
 
@@ -44,8 +44,16 @@ const PostItem = ({ post }: PostProps) => {
     likePost(post._id);
   };
 
+  const { mutate: commentPost, isPending: isCommenting } = useCommentMutation(
+    () => {
+      setText('');
+    }
+  );
+
   const handlePostComment = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isCommenting) return;
+    commentPost({ postId: post._id, data: { text } });
   };
 
   return (
@@ -151,8 +159,8 @@ const PostItem = ({ post }: PostProps) => {
                     <textarea
                       className="textarea w-full p-1 rounded text-md resize-none border focus:outline-none  border-gray-800"
                       placeholder="Add a comment..."
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
+                      value={text}
+                      onChange={(e) => setText(e.target.value)}
                     />
                     <button className="btn btn-primary rounded-full btn-sm text-white px-4">
                       {isCommenting ? <LoadingSpinner size="sm" /> : 'Post'}
