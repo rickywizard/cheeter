@@ -10,6 +10,7 @@ import useAuthUser from '../../hooks/useAuthUser';
 import useDeletePostMutation from '../../hooks/useDeletePostMutation';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ConfirmationModal from '../common/ConfirmationModal';
+import useLikePostMutation from '../../hooks/useLikePostMutation';
 
 interface PostProps {
   post: PostData;
@@ -24,21 +25,28 @@ const PostItem = ({ post }: PostProps) => {
   const { data: authUser } = useAuthUser();
 
   const isMyPost = authUser?.data?._id === postOwner._id;
-  const isLiked = false;
+  const isLiked = authUser?.data?._id
+    ? post.likes.includes(authUser.data._id)
+    : false;
   const formattedDate = '1h';
   const isCommenting = false;
 
-  const { mutate: deletePost, isPending } = useDeletePostMutation();
+  const { mutate: deletePost, isPending: isDeleting } = useDeletePostMutation();
 
   const handleDeletePost = () => {
     deletePost(post._id);
   };
 
+  const { mutate: likePost, isPending: isLiking } = useLikePostMutation();
+
+  const handleLikePost = () => {
+    if (isLiking) return;
+    likePost(post._id);
+  };
+
   const handlePostComment = (e: React.FormEvent) => {
     e.preventDefault();
   };
-
-  const handleLikePost = () => {};
 
   return (
     <>
@@ -65,14 +73,14 @@ const PostItem = ({ post }: PostProps) => {
             </span>
             {isMyPost && (
               <span className="flex justify-end flex-1">
-                {!isPending && (
+                {!isDeleting && (
                   <FaTrash
                     className="cursor-pointer hover:text-red-500"
                     onClick={() => deleteConfirmRef.current?.showModal()}
                   />
                 )}
 
-                {isPending && <LoadingSpinner size="sm" />}
+                {isDeleting && <LoadingSpinner size="sm" />}
               </span>
             )}
           </div>
@@ -147,11 +155,7 @@ const PostItem = ({ post }: PostProps) => {
                       onChange={(e) => setComment(e.target.value)}
                     />
                     <button className="btn btn-primary rounded-full btn-sm text-white px-4">
-                      {isCommenting ? (
-                        <span className="loading loading-spinner loading-md"></span>
-                      ) : (
-                        'Post'
-                      )}
+                      {isCommenting ? <LoadingSpinner size="sm" /> : 'Post'}
                     </button>
                   </form>
                 </div>
@@ -169,16 +173,17 @@ const PostItem = ({ post }: PostProps) => {
                 className="flex gap-1 items-center group cursor-pointer"
                 onClick={handleLikePost}
               >
-                {!isLiked && (
+                {isLiking && <LoadingSpinner size="sm" />}
+                {!isLiked && !isLiking && (
                   <FaRegHeart className="w-4 h-4 cursor-pointer text-slate-500 group-hover:text-pink-500" />
                 )}
-                {isLiked && (
-                  <FaRegHeart className="w-4 h-4 cursor-pointer text-pink-500 " />
+                {isLiked && !isLiking && (
+                  <FaRegHeart className="w-4 h-4 cursor-pointer text-pink-500" />
                 )}
 
                 <span
-                  className={`text-sm text-slate-500 group-hover:text-pink-500 ${
-                    isLiked ? 'text-pink-500' : ''
+                  className={`text-sm group-hover:text-pink-500 ${
+                    isLiked ? 'text-pink-500' : 'text-slate-500'
                   }`}
                 >
                   {post.likes.length}
