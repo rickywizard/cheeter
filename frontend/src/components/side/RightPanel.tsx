@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import RightPanelSkeleton from '../skeleton/RighPanelSkeleton';
 import useSuggestedUser from '../../hooks/useSuggestedUser';
+import useFollowMutation from '../../hooks/useFollowMutation';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 const RightPanel = () => {
   const { data, isLoading } = useSuggestedUser();
@@ -10,6 +12,14 @@ const RightPanel = () => {
   if (suggestedUser?.length === 0) {
     return <div className="md:w-60 w-0"></div>;
   }
+
+  const { mutate: follow, isPending } = useFollowMutation();
+
+  const handleFollow = (e: React.FormEvent, userId: string) => {
+    e.preventDefault();
+
+    follow(userId);
+  };
 
   return (
     <div className="hidden lg:block m-3">
@@ -49,9 +59,9 @@ const RightPanel = () => {
                 <div>
                   <button
                     className="btn bg-white text-black hover:bg-white hover:opacity-90 rounded-full btn-sm"
-                    onClick={(e) => e.preventDefault()}
+                    onClick={(e) => handleFollow(e, user._id)}
                   >
-                    Follow
+                    {isPending ? <LoadingSpinner size="sm" /> : 'Follow'}
                   </button>
                 </div>
               </Link>

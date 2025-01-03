@@ -4,7 +4,7 @@ import { UserData } from '../interfaces/UserData.interface';
 
 const useSuggestedUser = () => {
   return useQuery<Response<UserData[]>>({
-    queryKey: ['suggestedUser'],
+    queryKey: ['suggestedUsers'],
     queryFn: async () => {
       const res = await fetch('/api/user/suggested');
 
