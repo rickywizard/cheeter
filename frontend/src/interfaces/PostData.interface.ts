@@ -8,4 +8,5 @@ export interface PostData {
   user: UserData;
   comments: CommentData[];
   likes: string[];
+  createdAt: string;
 }

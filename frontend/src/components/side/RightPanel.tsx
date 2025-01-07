@@ -6,14 +6,13 @@ import LoadingSpinner from '../common/LoadingSpinner';
 
 const RightPanel = () => {
   const { data, isLoading } = useSuggestedUser();
+  const { mutate: follow, isPending } = useFollowMutation();
 
   const suggestedUser = data?.data;
 
   if (suggestedUser?.length === 0) {
     return <div className="md:w-60 w-0"></div>;
   }
-
-  const { mutate: follow, isPending } = useFollowMutation();
 
   const handleFollow = (e: React.FormEvent, userId: string) => {
     e.preventDefault();

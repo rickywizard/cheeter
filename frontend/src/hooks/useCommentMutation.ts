@@ -35,7 +35,7 @@ const useCommentMutation = (onSuccessCallback: () => void) => {
     },
     onSuccess: (res, variables) => {
       toast.success(res.message);
-      console.log(res);
+      // console.log(res);
 
       queryClient.setQueryData(
         ['posts'],

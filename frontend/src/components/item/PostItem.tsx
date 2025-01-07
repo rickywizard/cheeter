@@ -12,6 +12,7 @@ import LoadingSpinner from '../common/LoadingSpinner';
 import ConfirmationModal from '../common/ConfirmationModal';
 import useLikePostMutation from '../../hooks/useLikePostMutation';
 import useCommentMutation from '../../hooks/useCommentMutation';
+import { formatPostDate } from '../../utils/formatDate';
 
 interface PostProps {
   post: PostData;
@@ -25,30 +26,30 @@ const PostItem = ({ post }: PostProps) => {
 
   const { data: authUser } = useAuthUser();
 
-  const isMyPost = authUser?.data?._id === postOwner._id;
-  const isLiked = authUser?.data?._id
-    ? post.likes.includes(authUser.data._id)
-    : false;
-  const formattedDate = '1h';
-
   const { mutate: deletePost, isPending: isDeleting } = useDeletePostMutation();
 
-  const handleDeletePost = () => {
-    deletePost(post._id);
-  };
-
   const { mutate: likePost, isPending: isLiking } = useLikePostMutation();
-
-  const handleLikePost = () => {
-    if (isLiking) return;
-    likePost(post._id);
-  };
 
   const { mutate: commentPost, isPending: isCommenting } = useCommentMutation(
     () => {
       setText('');
     }
   );
+
+  const isMyPost = authUser?.data?._id === postOwner._id;
+  const isLiked = authUser?.data?._id
+    ? post.likes.includes(authUser.data._id)
+    : false;
+  const formattedDate = formatPostDate(post.createdAt);
+
+  const handleDeletePost = () => {
+    deletePost(post._id);
+  };
+
+  const handleLikePost = () => {
+    if (isLiking) return;
+    likePost(post._id);
+  };
 
   const handlePostComment = (e: React.FormEvent) => {
     e.preventDefault();
