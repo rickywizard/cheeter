@@ -31,13 +31,13 @@ const Sidebar = () => {
           <LogoSquare className="md:hidden block w-12" />
         </Link>
         <ul className="flex flex-col gap-3 mt-4">
-          <NavLink text="Home">
+          <NavLink text="Home" to="/">
             <GoHomeFill className="w-6 h-6" />
           </NavLink>
-          <NavLink text="Notifications">
+          <NavLink text="Notifications" to="/notifications">
             <IoNotifications className="w-6 h-6" />
           </NavLink>
-          <NavLink text="Profile">
+          <NavLink text="Profile" to={`/profile/${user?.username}`}>
             <RiUserFill className="w-6 h-6" />
           </NavLink>
         </ul>

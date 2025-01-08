@@ -4,13 +4,14 @@ import { Link } from 'react-router-dom';
 interface NavLinkProps {
   text: string;
   children: ReactNode;
+  to: string;
 }
 
-const NavLink = ({ text, children }: NavLinkProps) => {
+const NavLink = ({ text, children, to }: NavLinkProps) => {
   return (
     <li className="flex justify-center md:pr-3 md:px-0 px-3">
       <Link
-        to="/"
+        to={to}
         className="flex gap-3 items-center justify-center md:justify-start hover:bg-stone-900 transition-all rounded-md duration-300 py-2 md:pl-2 w-full cursor-pointer"
       >
         {children}
