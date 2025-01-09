@@ -1,11 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { Response } from '../interfaces/Response.interface';
 import { PostData } from '../interfaces/PostData.interface';
-import useAuthUser from './useAuthUser';
 
-const usePostQuery = (feedType: string) => {
-  const { data: authUser } = useAuthUser();
-
+const usePostQuery = (feedType: string, username: string) => {
   const getPostEndpoint = () => {
     switch (feedType) {
       case 'forYou':
@@ -13,9 +10,9 @@ const usePostQuery = (feedType: string) => {
       case 'following':
         return '/api/post/following';
       case 'yourPosts':
-        return `/api/post/user/${authUser?.data?.username}`;
+        return `/api/post/user/${username}`;
       case 'likes':
-        return `/api/post/likes/${authUser?.data?.username}`;
+        return `/api/post/likes/${username}`;
       default:
         return '/api/post/all';
     }

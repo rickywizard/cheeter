@@ -1,16 +1,14 @@
-import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { useEffect, useRef, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import Posts from '../../components/item/Posts';
 import ProfileHeaderSkeleton from '../../components/skeleton/ProfileHeaderSkeleton';
 import EditProfileModal from './EditProfileModal';
-
-import { POSTS } from '../../utils/dummyData';
-
 import { FaArrowLeft } from 'react-icons/fa6';
 import { IoCalendarOutline } from 'react-icons/io5';
 import { FaLink } from 'react-icons/fa';
 import { MdEdit } from 'react-icons/md';
+import useProfileQuery from '../../hooks/useProfileQuery';
+import { formatMemberSinceDate } from '../../utils/formatDate';
 
 const ProfilePage = () => {
   const [coverImg, setCoverImg] = useState<string | null>(null);
@@ -20,20 +18,17 @@ const ProfilePage = () => {
   const coverImgRef = useRef<HTMLInputElement | null>(null);
   const profileImgRef = useRef<HTMLInputElement | null>(null);
 
-  const isLoading = false;
-  const isMyProfile = true;
+  const { username } = useParams();
+  const { data, isPending, refetch, isRefetching } = useProfileQuery(
+    username || ''
+  );
+  const user = data?.data;
 
-  const user = {
-    _id: '1',
-    fullName: 'John Doe',
-    username: 'johndoe',
-    profileImg: '/avatar-placeholder.png',
-    coverImg: '/cover.png',
-    bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    link: 'https://youtube.com/@johndoe',
-    following: ['1', '2', '3'],
-    followers: ['1', '2', '3'],
-  };
+  useEffect(() => {
+    refetch();
+  }, [username, refetch]);
+
+  const isMyProfile = true;
 
   const handleImgChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -54,21 +49,21 @@ const ProfilePage = () => {
     <>
       <div className="w-full m-auto border-r border-gray-700 min-h-screen">
         {/* HEADER */}
-        {isLoading && <ProfileHeaderSkeleton />}
-        {!isLoading && !user && (
+        {(isPending || isRefetching) && <ProfileHeaderSkeleton />}
+        {!isPending && !isRefetching && !user && (
           <p className="text-center text-lg mt-4">User not found</p>
         )}
         <div className="flex flex-col">
-          {!isLoading && user && (
+          {!isPending && !isRefetching && user && (
             <>
               <div className="flex gap-10 px-4 py-2 items-center">
                 <Link to="/">
                   <FaArrowLeft className="w-4 h-4" />
                 </Link>
                 <div className="flex flex-col">
-                  <p className="font-bold text-lg">{user?.fullName}</p>
+                  <p className="font-bold text-lg">{user?.fullname}</p>
                   <span className="text-sm text-slate-500">
-                    {POSTS?.length} posts
+                    {user.postCount} posts
                   </span>
                 </div>
               </div>
@@ -143,7 +138,7 @@ const ProfilePage = () => {
 
               <div className="flex flex-col gap-4 mt-8 px-4">
                 <div className="flex flex-col">
-                  <span className="font-bold text-lg">{user?.fullName}</span>
+                  <span className="font-bold text-lg">{user?.fullname}</span>
                   <span className="text-sm text-slate-500">
                     @{user?.username}
                   </span>
@@ -161,7 +156,7 @@ const ProfilePage = () => {
                           rel="noreferrer"
                           className="text-sm text-blue-500 hover:underline"
                         >
-                          youtube.com/@johndoe
+                          {user.link}
                         </a>
                       </>
                     </div>
@@ -169,20 +164,20 @@ const ProfilePage = () => {
                   <div className="flex gap-2 items-center">
                     <IoCalendarOutline className="w-4 h-4 text-slate-500" />
                     <span className="text-sm text-slate-500">
-                      Joined July 2021
+                      {formatMemberSinceDate(user.createdAt!!)}
                     </span>
                   </div>
                 </div>
                 <div className="flex gap-2">
                   <div className="flex gap-1 items-center">
                     <span className="font-bold text-xs">
-                      {user?.following.length}
+                      {user?.following?.length}
                     </span>
                     <span className="text-slate-500 text-xs">Following</span>
                   </div>
                   <div className="flex gap-1 items-center">
                     <span className="font-bold text-xs">
-                      {user?.followers.length}
+                      {user?.followers?.length}
                     </span>
                     <span className="text-slate-500 text-xs">Followers</span>
                   </div>
@@ -215,7 +210,7 @@ const ProfilePage = () => {
             </>
           )}
 
-          <Posts feedType={feedType} />
+          <Posts feedType={feedType} username={username} />
         </div>
       </div>
     </>

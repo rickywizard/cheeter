@@ -9,4 +9,5 @@ export interface PostData {
   comments: CommentData[];
   likes: string[];
   createdAt: string;
+  updatedAt: string;
 }

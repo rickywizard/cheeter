@@ -12,4 +12,7 @@ export interface UserData {
   bio?: string;
   link?: string;
   likedPosts?: PostData[];
+  postCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
 }

@@ -3,14 +3,22 @@ import PostItem from '../../components/item/PostItem';
 import PostSkeleton from '../../components/skeleton/PostSkeleton';
 import usePostQuery from '../../hooks/usePostQuery';
 
-const Posts = ({ feedType }: { feedType: string }) => {
-  const { data, isLoading, refetch, isRefetching } = usePostQuery(feedType);
+interface PostsProps {
+  feedType: string;
+  username?: string;
+}
+
+const Posts = ({ feedType, username }: PostsProps) => {
+  const { data, isLoading, refetch, isRefetching } = usePostQuery(
+    feedType,
+    username || ''
+  );
 
   const posts = data?.data;
 
   useEffect(() => {
     refetch();
-  }, [feedType, refetch]);
+  }, [feedType, username, refetch]);
 
   return (
     <>
