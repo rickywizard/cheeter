@@ -35,8 +35,6 @@ const useUpdateProfileMutation = (onSuccessCallback: () => void) => {
       ]);
 
       onSuccessCallback();
-
-      console.log(res.data);
     },
   });
 };
