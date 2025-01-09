@@ -85,7 +85,10 @@ const SignUpPage = () => {
             >
               <MdPassword />
             </SignUpInput>
-            <button className="btn rounded-md btn-primary text-white">
+            <button
+              className="btn rounded-md btn-primary text-white"
+              disabled={isPending}
+            >
               {isPending ? 'Loading...' : 'Sign up'}
             </button>
           </form>

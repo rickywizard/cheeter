@@ -9,6 +9,9 @@ import { FaLink } from 'react-icons/fa';
 import { MdEdit } from 'react-icons/md';
 import useProfileQuery from '../../hooks/useProfileQuery';
 import { formatMemberSinceDate } from '../../utils/formatDate';
+import useAuthUser from '../../hooks/useAuthUser';
+import useFollowMutation from '../../hooks/useFollowMutation';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 const ProfilePage = () => {
   const [coverImg, setCoverImg] = useState<string | null>(null);
@@ -18,8 +21,10 @@ const ProfilePage = () => {
   const coverImgRef = useRef<HTMLInputElement | null>(null);
   const profileImgRef = useRef<HTMLInputElement | null>(null);
 
+  const { mutate: follow, isPending: isFollowing } = useFollowMutation();
+
   const { username } = useParams();
-  const { data, isPending, refetch, isRefetching } = useProfileQuery(
+  const { data, isLoading, refetch, isRefetching } = useProfileQuery(
     username || ''
   );
   const user = data?.data;
@@ -28,7 +33,17 @@ const ProfilePage = () => {
     refetch();
   }, [username, refetch]);
 
-  const isMyProfile = true;
+  const { data: authUser } = useAuthUser();
+
+  const isMyProfile = authUser?.data?._id === user?._id;
+
+  const handleFollow = (e: React.FormEvent, userId: string) => {
+    e.preventDefault();
+
+    follow(userId);
+  };
+
+  const hasFollowed = authUser?.data?.following?.includes(user?._id || '');
 
   const handleImgChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -49,12 +64,12 @@ const ProfilePage = () => {
     <>
       <div className="w-full m-auto border-r border-gray-700 min-h-screen">
         {/* HEADER */}
-        {(isPending || isRefetching) && <ProfileHeaderSkeleton />}
-        {!isPending && !isRefetching && !user && (
+        {(isLoading || isRefetching) && <ProfileHeaderSkeleton />}
+        {!isLoading && !isRefetching && !user && (
           <p className="text-center text-lg mt-4">User not found</p>
         )}
         <div className="flex flex-col">
-          {!isPending && !isRefetching && user && (
+          {!isLoading && !isRefetching && user && (
             <>
               <div className="flex gap-10 px-4 py-2 items-center">
                 <Link to="/">
@@ -121,9 +136,16 @@ const ProfilePage = () => {
                 {!isMyProfile && (
                   <button
                     className="btn btn-outline rounded-full btn-sm"
-                    onClick={() => alert('Followed successfully')}
+                    onClick={(e) => handleFollow(e, user._id)}
+                    disabled={isFollowing}
                   >
-                    Follow
+                    {isFollowing ? (
+                      <LoadingSpinner size="sm" />
+                    ) : !hasFollowed ? (
+                      'Follow'
+                    ) : (
+                      'Unfollow'
+                    )}
                   </button>
                 )}
                 {(coverImg || profileImg) && (

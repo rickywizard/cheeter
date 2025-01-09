@@ -1,17 +1,15 @@
-import { PostData } from './PostData.interface';
-
 export interface UserData {
   _id: string;
   username: string;
   fullname?: string;
   email?: string;
-  followers?: UserData[];
-  following?: UserData[];
+  followers?: string[];
+  following?: string[];
   profileImg?: string;
   coverImg?: string;
   bio?: string;
   link?: string;
-  likedPosts?: PostData[];
+  likedPosts?: string[];
   postCount?: number;
   createdAt?: string;
   updatedAt?: string;

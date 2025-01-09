@@ -52,7 +52,10 @@ const LoginPage = () => {
           >
             <MdPassword />
           </Input>
-          <button className="btn rounded-md btn-primary text-white">
+          <button
+            className="btn rounded-md btn-primary text-white"
+            disabled={isPending}
+          >
             {isPending ? 'Loading...' : 'Login'}
           </button>
         </form>
