@@ -193,7 +193,9 @@ export const updateUserProfile = async (req, res) => {
 
     user.password = null;
 
-    res.status(200).json({ success: true, data: user });
+    res
+      .status(200)
+      .json({ success: true, data: user, message: 'Profile Updated' });
   } catch (error) {
     console.error('Error in udpateUserProfile', error.message);
     res.status(500).json({ success: false, error: error.message });

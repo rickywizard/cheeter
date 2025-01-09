@@ -15,6 +15,6 @@ router.get('/suggested', protectRoute, getSuggestedUser);
 
 router.post('/follow/:id', protectRoute, followUnfollowUser);
 
-router.post('/update', protectRoute, updateUserProfile);
+router.put('/update', protectRoute, updateUserProfile);
 
 export default router;

@@ -9,16 +9,15 @@ import useAuthUser from '../../hooks/useAuthUser';
 import { GoHomeFill } from 'react-icons/go';
 
 const Sidebar = () => {
+  const { data } = useAuthUser();
+  const user = data?.data;
+
   const { mutate } = useLogoutMutation();
 
   const handleLogout = (e: React.FormEvent) => {
     e.preventDefault();
     mutate();
   };
-
-  const { data } = useAuthUser();
-
-  const user = data?.data;
 
   return (
     <div className="md:flex-[2_2_0] w-18 max-w-52">

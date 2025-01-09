@@ -1,8 +1,15 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import useUpdateProfileMutation from '../../hooks/useUpdateProfileMutation';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { UserData } from '../../interfaces/UserData.interface';
 
-const EditProfileModal = () => {
+interface ProfileProps {
+  authUser: UserData;
+}
+
+const EditProfileModal = ({ authUser }: ProfileProps) => {
   const [formData, setFormData] = useState({
-    fullName: '',
+    fullname: '',
     username: '',
     email: '',
     bio: '',
@@ -12,6 +19,38 @@ const EditProfileModal = () => {
   });
 
   const modalRef = useRef<HTMLDialogElement>(null);
+
+  const { mutate: updateProfile, isPending: isUpdating } =
+    useUpdateProfileMutation(() => {
+      setFormData({
+        fullname: '',
+        username: '',
+        email: '',
+        bio: '',
+        link: '',
+        newPassword: '',
+        currentPassword: '',
+      });
+    });
+
+  useEffect(() => {
+    if (authUser) {
+      setFormData({
+        fullname: authUser.fullname || '',
+        username: authUser.username || '',
+        email: authUser.email || '',
+        bio: authUser.bio || '',
+        link: authUser.link || '',
+        newPassword: '',
+        currentPassword: '',
+      });
+    }
+  }, [authUser]);
+
+  const handleUpdateProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateProfile(formData);
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -30,20 +69,14 @@ const EditProfileModal = () => {
       <dialog ref={modalRef} className="modal">
         <div className="modal-box border rounded-md border-gray-700 shadow-md">
           <h3 className="font-bold text-lg my-3">Update Profile</h3>
-          <form
-            className="flex flex-col gap-4"
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert('Profile updated successfully');
-            }}
-          >
+          <form className="flex flex-col gap-4" onSubmit={handleUpdateProfile}>
             <div className="flex flex-wrap gap-2">
               <input
                 type="text"
                 placeholder="Full Name"
                 className="flex-1 input border border-gray-700 rounded p-2 input-md"
-                value={formData.fullName}
-                name="fullName"
+                value={formData.fullname}
+                name="fullname"
                 onChange={handleInputChange}
               />
               <input
@@ -98,8 +131,11 @@ const EditProfileModal = () => {
               name="link"
               onChange={handleInputChange}
             />
-            <button className="btn btn-primary rounded-full btn-sm text-white">
-              Update
+            <button
+              className="btn btn-primary rounded-full btn-sm text-white"
+              disabled={isUpdating}
+            >
+              {isUpdating ? <LoadingSpinner size="sm" /> : 'Update'}
             </button>
           </form>
         </div>

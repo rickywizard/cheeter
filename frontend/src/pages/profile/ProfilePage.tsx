@@ -12,6 +12,7 @@ import { formatMemberSinceDate } from '../../utils/formatDate';
 import useAuthUser from '../../hooks/useAuthUser';
 import useFollowMutation from '../../hooks/useFollowMutation';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import useUpdateProfileMutation from '../../hooks/useUpdateProfileMutation';
 
 const ProfilePage = () => {
   const [coverImg, setCoverImg] = useState<string | null>(null);
@@ -22,6 +23,12 @@ const ProfilePage = () => {
   const profileImgRef = useRef<HTMLInputElement | null>(null);
 
   const { mutate: follow, isPending: isFollowing } = useFollowMutation();
+
+  const { mutate: updateProfile, isPending: isUpdating } =
+    useUpdateProfileMutation(() => {
+      setCoverImg(null);
+      setProfileImg(null);
+    });
 
   const { username } = useParams();
   const { data, isLoading, refetch, isRefetching } = useProfileQuery(
@@ -37,13 +44,17 @@ const ProfilePage = () => {
 
   const isMyProfile = authUser?.data?._id === user?._id;
 
+  const hasFollowed = authUser?.data?.following?.includes(user?._id || '');
+
   const handleFollow = (e: React.FormEvent, userId: string) => {
     e.preventDefault();
 
     follow(userId);
   };
 
-  const hasFollowed = authUser?.data?.following?.includes(user?._id || '');
+  const handleUpdateProfile = () => {
+    updateProfile({ profileImg, coverImg });
+  };
 
   const handleImgChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -132,7 +143,9 @@ const ProfilePage = () => {
                 </div>
               </div>
               <div className="flex justify-end px-4 mt-5">
-                {isMyProfile && <EditProfileModal />}
+                {isMyProfile && (
+                  <EditProfileModal authUser={authUser?.data!!} />
+                )}
                 {!isMyProfile && (
                   <button
                     className="btn btn-outline rounded-full btn-sm"
@@ -151,9 +164,10 @@ const ProfilePage = () => {
                 {(coverImg || profileImg) && (
                   <button
                     className="btn btn-primary rounded-full btn-sm text-white px-4 ml-2"
-                    onClick={() => alert('Profile updated successfully')}
+                    onClick={handleUpdateProfile}
+                    disabled={isUpdating}
                   >
-                    Update
+                    {isUpdating ? <LoadingSpinner size="sm" /> : 'Update'}
                   </button>
                 )}
               </div>
